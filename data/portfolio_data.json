@@ -1,0 +1,273 @@
+{
+  "navigation": {
+    "brand": "Vrutant",
+    "subtitle": "Video Editor",
+    "menu": [
+      {
+        "label": "About",
+        "href": "#about"
+      },
+      {
+        "label": "Experience",
+        "href": "#experience"
+      },
+      {
+        "label": "Projects",
+        "href": "#projects"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      }
+    ]
+  },
+  "personal": {
+    "availability": "Available for Projects",
+    "title": "Capturing the Moments\nThat Capture Your Heart.",
+    "description": "Professional Video editor with 6+ years of experience creating compelling content."
+  },
+  "hero": {
+    "image": "/uploads/images/milu78ou-v_image3.jpg",
+    "buttons": {
+      "primary": {
+        "text": "View Reel",
+        "link": "https://www.instagram.com/vr_productiox/"
+      },
+      "secondary": {
+        "text": "Download Resume",
+        "file": "VRUTANT-RATNAPURE-FlowCV-Resume-20251117[1].pdf"
+      }
+    }
+  },
+  "about": {
+    "title": "About Me",
+    "intro": "I am a freelance cinematographer and video editor.",
+    "description": " I am a freelance cinematographer and video editor, passionate about creating powerful visual stories that connect with audiences. From concept development and shooting supervision to editing, color grading, motion graphics, and finishing, I specialize in transforming raw footage into compelling narratives. I’ve worked on diverse projects, blending artistic storytelling with technical precision, and I believe every frame has the power to leave a lasting impact.\n\nAlongside my creative work, I am also pursuing my B.Tech in Computer Science at G.H. Raisoni College of Engineering (GHRCE), with a growing interest in cybersecurity, ethical hacking, and system administration. Currently, I’m gaining hands-on experience in content creation and video production through my part-time role at Entrance Zone (Vatsala Academic).\n\nWhile my primary passion lies in filmmaking and editing, my background in technology and cybersecurity gives me a unique perspective — enabling me to approach projects with creativity, precision, and problem-solving skills.\n",
+    "skills": [
+      "Premiere Pro",
+      "After Effects",
+      "DaVinci Resolve",
+      "Final Cut Pro"
+    ],
+    "mainImage": "v_image2.jpg",
+    "smallImage": "v3.jpg.webp"
+  },
+  "experienceSection": {
+    "title": "Professional Journey",
+    "subtitle": "Five years of crafting compelling visual stories across industries, from start-ups to fortune 500 companies."
+  },
+  "stats": {
+    "projects": "50+",
+    "experience": "5+",
+    "clients": "25+",
+    "awards": "3+"
+  },
+  "skills": [
+    {
+      "name": "Premiere Pro",
+      "percentage": 90
+    },
+    {
+      "name": "After Effects",
+      "percentage": 50
+    },
+    {
+      "name": "DaVinci Resolve",
+      "percentage": 65
+    },
+    {
+      "name": "Final Cut Pro",
+      "percentage": 70
+    },
+    {
+      "name": "CapCut",
+      "percentage": 85
+    }
+  ],
+  "currentPosition": {
+    "role": "Video Editor",
+    "company": "Entrance Zone (Vatsala Academic)",
+    "duration": "2023 – Present",
+    "location": "Nagpur, Maharashtra, India",
+    "tags": [
+      "Content Creation",
+      "Video Production",
+      "Educational Content"
+    ],
+    "topSkills": [
+      {
+        "name": "Commercial Editing",
+        "percentage": 90
+      },
+      {
+        "name": "Documentary",
+        "percentage": 90
+      }
+    ]
+  },
+  "metrics": {
+    "projects": "100+ Projects Delivered",
+    "clients": "25+ Happy Clients",
+    "awards": "Awards: 3+"
+  },
+  "career": [
+    "Video Editor — Entrance Zone (Vatsala Academic) — 2023–Present\\nFreelance Video Editor & Cinematographer — 2021–Present\\nStudent — G.H. Raisoni College of Engineering (GHRCE) — B.Tech Computer Science — 2022–Present"
+  ],
+  "techStack": [
+    "Premiere Pro",
+    "After Effects",
+    "DaVinci Resolve",
+    "Final Cut Pro",
+    "CapCut",
+    "Photoshop"
+  ],
+  "recognition": [
+    {
+      "icon": "🏆",
+      "title": "Best Video Edit",
+      "event": "Video Award 2025"
+    },
+    {
+      "icon": "⭐",
+      "title": "Best Video Edit",
+      "event": "Video Award 2024"
+    }
+  ],
+  "testimonials": [
+    {
+      "quote": "Vrutant transformed our vision into reality with exceptional and technical expertise. The commercial campaign exceeded our expectations and drove a 40% increase in engagement.",
+      "author": "Edit Client 01"
+    },
+    {
+      "quote": "Working with Vrutant was smooth and professional from start to finish. The final video quality was outstanding.",
+      "author": "Edit Client 02"
+    }
+  ],
+  "projects": [
+    {
+      "title": "Real Information Commercial",
+      "description": "Film‑grade commercial edit for a modern brand.",
+      "type": "link",
+      "views": "50 View",
+      "engagement": "Like Share",
+      "link": ""
+    },
+    {
+      "title": "Climate Change Documentary",
+      "description": "Documentary storytelling focused on climate change.",
+      "type": "link",
+      "views": "50 View",
+      "engagement": "Like Share",
+      "link": ""
+    },
+    {
+      "title": "Juice Social Media Video",
+      "description": "Social media campaign for a juice brand.",
+      "type": "link",
+      "views": "50 View",
+      "engagement": "Like Share",
+      "link": ""
+    },
+    {
+      "title": "Real Information Commercial",
+      "description": "High‑impact TV commercial edit.",
+      "type": "link",
+      "views": "50 View",
+      "engagement": "Like Share",
+      "link": ""
+    },
+    {
+      "title": "Climate Change Documentary",
+      "description": "Awareness documentary piece.",
+      "type": "link",
+      "views": "50 View",
+      "engagement": "Like Share",
+      "link": ""
+    },
+    {
+      "title": "Juice Social Media Video",
+      "description": "Short‑form video for social media.",
+      "type": "link",
+      "views": "50 View",
+      "engagement": "Like Share",
+      "link": ""
+    }
+  ],
+  "projectBreakdown": [
+    {
+      "name": "Commercials",
+      "countText": "15 Projects",
+      "percentage": 0
+    }
+  ],
+  "servicesRow": [
+    {
+      "icon": "🎬",
+      "title": "Commercial Editing",
+      "description": "Hospital ad - Click to watch professional commercial video editing",
+      "type": "video",
+      "videoFile": "lv_0_20250921131544.mp4"
+    },
+    {
+      "icon": "🎥",
+      "title": "Documentary Films",
+      "description": "Compelling documentary storytelling - Click to watch on YouTube",
+      "type": "link",
+      "link": "https://youtu.be/TbQMvC1-KtY?si=uoRZaRtT8m_0plQw"
+    },
+    {
+      "icon": "📵",
+      "title": "Music Video",
+      "description": "Professional music video production - Click to watch on YouTube",
+      "type": "link",
+      "link": "https://youtu.be/yjvuz9SAhng?si=wIYBjh80LSzEwOe1"
+    },
+    {
+      "icon": "🎞",
+      "title": "Digital Content",
+      "description": "Instagram reel content creation - Click to watch on Instagram",
+      "type": "link",
+      "link": "https://www.instagram.com/reel/DI-vZOwRJ4l/?igsh=MWR5MmY0aWZlejMwNQ=="
+    }
+  ],
+  "projectsSection": {
+    "title": "Professional Journey",
+    "subtitle": "6 key years of commercial creative work includes film-grade TV commercials"
+  },
+  "contact": {
+    "title": "Let's Work Together",
+    "subtitle": "Ready to bring your vision to life?",
+    "infoHeading": "Get In Touch",
+    "infoBody": "Whether you have a specific project in mind or just want to brainstorm ideas, I'd love to hear from you. Let's create something amazing together.",
+    "socialHeading": "Follow Me",
+    "details": {
+      "email": "vrutant@example.com",
+      "phone": "+1 (555) 123-4567",
+      "location": "Available Worldwide"
+    },
+    "social": {
+      "linkedin": "#",
+      "instagram": "#",
+      "facebook": "#"
+    }
+  },
+  "footer": {
+    "name": "Vrutant",
+    "role": "Video Editor",
+    "copyright": "© 2024 Vrutant. All rights reserved."
+  },
+  "navigationMenuText": "About | #about\nExperience | #experience\nProjects | #projects\nContact | #contact\n",
+  "projectBreakdownText": "Commercials | 15 Projects | 0",
+  "careerText": "Video Editor — Entrance Zone (Vatsala Academic) — 2023–Present\\nFreelance Video Editor & Cinematographer — 2021–Present\\nStudent — G.H. Raisoni College of Engineering (GHRCE) — B.Tech Computer Science — 2022–Present",
+  "techStackText": "Premiere Pro\nAfter Effects\nDaVinci Resolve\nFinal Cut Pro\nCapCut\nPhotoshop",
+  "recognitionText": "🏆 | Best Video Edit | Video Award 2025\n⭐ | Best Video Edit | Video Award 2024",
+  "testimonialsText": "Vrutant transformed our vision into reality with exceptional and technical expertise. The commercial campaign exceeded our expectations and drove a 40% increase in engagement. | Edit Client 01\\nWorking with Vrutant was smooth and professional from start to finish. The final video quality was outstanding. | Edit Client 02",
+  "servicesRowText": "🎬 | Commercial Editing | Hospital ad - Click to watch professional commercial video editing | video | lv_0_20250921131544.mp4\\n🎥 | Documentary Films | Compelling documentary storytelling - Click to watch on YouTube | link | https://youtu.be/TbQMvC1-KtY?si=uoRZaRtT8m_0plQw\\n📵 | Music Video | Professional music video production - Click to watch on YouTube | link | https://youtu.be/yjvuz9SAhng?si=wIYBjh80LSzEwOe1\\n🎞 | Digital Content | Instagram reel content creation - Click to watch on Instagram | link | https://www.instagram.com/reel/DI-vZOwRJ4l/?igsh=MWR5MmY0aWZlejMwNQ==",
+  "projectsText": "Real Information Commercial | Film‑grade commercial edit for a modern brand. | link |  | 50 View | Like Share\\nClimate Change Documentary | Documentary storytelling focused on climate change. | link |  | 50 View | Like Share\\nJuice Social Media Video | Social media campaign for a juice brand. | link |  | 50 View | Like Share\\nReal Information Commercial | High‑impact TV commercial edit. | link |  | 50 View | Like Share\\nClimate Change Documentary | Awareness documentary piece. | link |  | 50 View | Like Share\\nJuice Social Media Video | Short‑form video for social media. | link |  | 50 View | Like Share",
+  "theme": {
+    "primary": "",
+    "secondary": "",
+    "background": "",
+    "text": ""
+  }
+}

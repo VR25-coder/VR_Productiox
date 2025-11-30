@@ -1,0 +1,13 @@
+{
+  "name": "vr-portfolio",
+  "version": "1.0.0",
+  "description": "Vrutant portfolio with admin panel and JSON-backed API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "pdfkit": "^0.15.2"
+  }
+}

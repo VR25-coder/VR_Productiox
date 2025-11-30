@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel - Vrutant Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    body { background: #050505; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .admin-shell { max-width: 1200px; margin: 5rem auto; padding: 2rem; background: #111; border-radius: 16px; color: #fff; }
+    .admin-login { max-width: 400px; margin: 6rem auto; padding: 2rem; background: #111; border-radius: 16px; color: #fff; }
+    .admin-login input { width: 100%; padding: 0.6rem 0.8rem; margin-top: 0.5rem; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; }
+    .admin-login button { margin-top: 1rem; width: 100%; padding: 0.7rem; border-radius: 8px; border: none; background: #fff; color: #000; font-weight: 600; cursor: pointer; }
+    .tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+    .tab-btn { padding: 0.5rem 1rem; border-radius: 999px; border: 1px solid #333; background: transparent; color: #fff; cursor: pointer; font-size: 0.9rem; }
+    .tab-btn.active { background: #fff; color: #000; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .field-group { margin-bottom: 1rem; }
+    .field-group label { display: block; font-size: 0.85rem; margin-bottom: 0.25rem; color: #ccc; }
+    .field-group input, .field-group textarea { width: 100%; padding: 0.6rem 0.8rem; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; font-size: 0.9rem; }
+    .field-group textarea { min-height: 80px; }
+    .admin-actions { margin-top: 1rem; display: flex; gap: 0.75rem; }
+    .admin-actions button { padding: 0.6rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; }
+    .btn-primary-admin { background: #fff; color: #000; font-weight: 600; }
+    .btn-secondary-admin { background: #222; color: #fff; }
+    .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .preview-box { background: #000; border-radius: 12px; padding: 1rem; border: 1px solid #333; max-height: 500px; overflow: auto; }
+    .list { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .list-item { padding: 0.75rem 1rem; border-radius: 10px; background: #000; border: 1px solid #333; display: flex; justify-content: space-between; gap: 0.75rem; align-items: flex-start; }
+    .list-item-main { flex: 1; }
+    .list-item-actions { display: flex; flex-direction: column; gap: 0.3rem; }
+    .badge { display: inline-flex; align-items: center; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; border: 1px solid #555; margin-left: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div id="admin-login" class="admin-login">
+    <h1>Admin Login</h1>
+    <p style="font-size:0.9rem;color:#aaa;margin-top:0.5rem;">Enter admin password to manage portfolio, messages, and billing.</p>
+    <div class="field-group" style="margin-top:1.5rem;">
+      <label for="admin-password">Password</label>
+      <input type="password" id="admin-password" />
+    </div>
+    <button id="login-btn">Login</button>
+    <p id="login-error" style="color:#f87171;font-size:0.85rem;margin-top:0.75rem;display:none;">Invalid password, try again.</p>
+  </div>
+
+  <div id="admin-shell" class="admin-shell" style="display:none;">
+    <h1 style="margin-bottom:1rem;">Admin Panel</h1>
+    <p style="color:#aaa;font-size:0.9rem;margin-bottom:2rem;">
+      Edit portfolio content, manage messages, and handle billing. Changes are applied live as soon as you save.
+    </p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="portfolio">Portfolio</button>
+      <button class="tab-btn" data-tab="messages">Messages</button>
+      <button class="tab-btn" data-tab="billing">Billing</button>
+    </div>
+
+    <div id="tab-portfolio" class="tab-panel active">
+      <div class="two-column">
+        <div>
+          <h2>Text & Images</h2>
+          <div id="portfolio-form"></div>
+          <div class="admin-actions">
+            <button class="btn-primary-admin" id="save-portfolio">Save Changes</button>
+            <button class="btn-secondary-admin" id="reload-portfolio">Reload from Live</button>
+          </div>
+        </div>
+        <div>
+          <h2>Live Preview</h2>
+          <div id="portfolio-preview" class="preview-box"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-messages" class="tab-panel">
+      <h2>Contact Messages</h2>
+      <p style="font-size:0.85rem;color:#aaa;">Messages sent from the portfolio contact form appear here in realtime.</p>
+      <div id="messages-list" class="list"></div>
+    </div>
+
+    <div id="tab-billing" class="tab-panel">
+      <h2>Billing & Invoices</h2>
+      <div class="two-column">
+        <div>
+          <h3>Create Invoice</h3>
+          <div id="invoice-form"></div>
+          <div class="admin-actions">
+            <button class="btn-primary-admin" id="create-invoice">Create Invoice</button>
+          </div>
+        </div>
+        <div>
+          <h3>All Invoices</h3>
+          <div id="invoices-list" class="list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
