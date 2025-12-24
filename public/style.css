@@ -1531,15 +1531,9 @@ body::after {
 
 /* Project Breakdown Card */
 .project-bars {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 24px;
-}
-
-@media (max-width: 768px) {
-    .project-bars {
-        grid-template-columns: 1fr; /* stack bars on small screens */
-    }
+    display: flex;
+    flex-direction: column; /* 1 column, 4 rows */
+    gap: 16px;
 }
 
 .project-bar-item {
@@ -1877,15 +1871,16 @@ body::after {
 
 /* Project Breakdown Card */
 .project-bars {
-    display: grid; /* ensure two-column grid here too */
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 24px;
+    display: flex;
+    flex-direction: column; /* 1 column, 4 rows */
+    gap: 16px;
 }
 
 .project-bar-item {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    grid-column: 1 / -1; /* safety if any grid rules remain */
 }
 
 .project-name {
@@ -2849,6 +2844,76 @@ body::after {
 
 .mt-2 {
     margin-top: 2rem;
+}
+
+/* Final layout for Project Portfolio Breakdown card (consistent on all devices) */
+.dashboard-card.project-breakdown {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-card.project-breakdown .card-title {
+    margin-bottom: 18px;
+}
+
+.dashboard-card.project-breakdown .project-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.dashboard-card.project-breakdown .project-bar-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dashboard-card.project-breakdown .project-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.dashboard-card.project-breakdown .project-fill {
+    height: 100%;
+    border-radius: inherit;
+}
+
+.dashboard-card.project-breakdown .project-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.dashboard-card.project-breakdown .project-name {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #f9fafb;
+}
+
+.dashboard-card.project-breakdown .project-count {
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+    .dashboard-card.project-breakdown {
+        padding: 24px 20px;
+    }
+
+    .dashboard-card.project-breakdown .project-bars {
+        gap: 12px;
+    }
+}
+
+/* On large screens, let the Project Portfolio Breakdown card span two columns */
+@media (min-width: 1024px) {
+    .dashboard-card.project-breakdown {
+        grid-column: span 2;
+    }
 }
 
 /* Theming overrides: colors can be controlled via CSS variables (set by JSON theme) */

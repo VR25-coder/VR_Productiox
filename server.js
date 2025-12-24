@@ -138,12 +138,13 @@ const loginLimiter = rateLimit({
   legacyHeaders: false
 });
 
-const messagesLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000,
-  limit: 25,
-  standardHeaders: true,
-  legacyHeaders: false
-});
+// Messages limiter removed so every contact form submission reaches admin without rate limiting.
+// const messagesLimiter = rateLimit({
+//   windowMs: 10 * 60 * 1000,
+//   limit: 25,
+//   standardHeaders: true,
+//   legacyHeaders: false
+// });
 
 const uploadLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
@@ -383,18 +384,13 @@ app.post('/api/upload', requireAdmin, uploadLimiter, (req, res) => {
 });
 
 // Messages API
-app.post('/api/messages', messagesLimiter, (req, res) => {
+app.post('/api/messages', (req, res) => {
   const parsed = messageSchema.safeParse(req.body || {});
   if (!parsed.success) {
     return res.status(400).json({ error: 'Invalid message payload' });
   }
 
-  const { subject, message } = parsed.data;
-  if (hasProhibitedLanguage(subject) || hasProhibitedLanguage(message)) {
-    return res.status(400).json({ error: 'Inappropriate language is not allowed' });
-  }
-
-  const messages = readJson(messagesFile, []);
+  // No language filtering or rate limiting so every valid message reaches the admin.
   const id = 'msg_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   const createdAt = new Date().toISOString();
   const msg = { id, read: false, createdAt, ...parsed.data };

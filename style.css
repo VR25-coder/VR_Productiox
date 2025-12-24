@@ -1385,16 +1385,21 @@ body::after {
 }
 
 /* Project Breakdown Card */
+.project-breakdown .card-title {
+    margin-bottom: 20px;
+}
+
 .project-bars {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 24px;
+    display: flex;
+    flex-direction: column; /* 1 column, 4 rows */
+    gap: 16px;
 }
 
 .project-bar-item {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    min-width: 0; /* prevent text from forcing overflow */
 }
 
 .project-bar {
@@ -1402,7 +1407,7 @@ body::after {
     height: 8px;
     border-radius: 4px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.1); /* visible track */
+    background: rgba(255, 255, 255, 0.08); /* visible track */
 }
 
 .project-fill {
@@ -1435,6 +1440,9 @@ body::after {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex-wrap: wrap; /* allow text to wrap inside the card */
 }
 
 .project-name {
@@ -1446,10 +1454,11 @@ body::after {
 
 .project-count {
     font-family: 'Poppins', 'Inter', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #AAAAAA;
     font-weight: 400;
 }
+
 
 /* Tech Stack Card */
 .tech-tools-grid {
@@ -1729,9 +1738,9 @@ body::after {
 
 /* Project Breakdown Card */
 .project-bars {
-    display: grid; /* ensure two-column grid here too */
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 24px;
+    display: flex;
+    flex-direction: column; /* 1 column, 4 rows */
+    gap: 16px;
 }
 
 .project-bar-item {
@@ -2703,6 +2712,76 @@ body::after {
     margin-top: 2rem;
 }
 
+/* Final layout for Project Portfolio Breakdown card (consistent on all devices) */
+.dashboard-card.project-breakdown {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-card.project-breakdown .card-title {
+    margin-bottom: 18px;
+}
+
+.dashboard-card.project-breakdown .project-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.dashboard-card.project-breakdown .project-bar-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dashboard-card.project-breakdown .project-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.dashboard-card.project-breakdown .project-fill {
+    height: 100%;
+    border-radius: inherit;
+}
+
+.dashboard-card.project-breakdown .project-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.dashboard-card.project-breakdown .project-name {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #f9fafb;
+}
+
+.dashboard-card.project-breakdown .project-count {
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+    .dashboard-card.project-breakdown {
+        padding: 24px 20px;
+    }
+
+    .dashboard-card.project-breakdown .project-bars {
+        gap: 12px;
+    }
+}
+
+/* On large screens, let the Project Portfolio Breakdown card span two columns */
+@media (min-width: 1024px) {
+    .dashboard-card.project-breakdown {
+        grid-column: span 2;
+    }
+}
+
 /* Theming overrides: colors can be controlled via CSS variables (set by JSON theme) */
 :root {
     --accent-color: #7c3aed;
@@ -2736,40 +2815,22 @@ body {
    FIX ONLY: Project Breakdown Card
    =============================== */
 
+/* Final authoritative override: always stack 4 rows for this card */
 .dashboard-card.project-breakdown .project-bars {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 24px;
-    row-gap: 20px;
-}
-
-.dashboard-card.project-breakdown .project-bar-item {
-    width: 100%;
-}
-
-@media (max-width: 768px) {
-    .dashboard-card.project-breakdown .project-bars {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ==================================================
-   FIX: Project Portfolio Breakdown (ONLY this card)
-   ================================================== */
-
-.dashboard-card.project-breakdown .project-bars {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 22px 28px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
 }
 
 .dashboard-card.project-breakdown .project-bar-item {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
+    /* If some old CSS keeps grid, span full width anyway */
+    grid-column: 1 / -1;
 }
 
-/* Bar track */
 .dashboard-card.project-breakdown .project-bar {
     height: 6px;
     border-radius: 999px;
@@ -2777,20 +2838,17 @@ body {
     overflow: hidden;
 }
 
-/* Bar fill */
 .dashboard-card.project-breakdown .project-fill {
     height: 100%;
     border-radius: inherit;
 }
 
-/* Label row under bar */
 .dashboard-card.project-breakdown .project-labels {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* Text styling */
 .dashboard-card.project-breakdown .project-name {
     font-size: 0.95rem;
     font-weight: 500;

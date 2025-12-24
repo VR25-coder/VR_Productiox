@@ -440,7 +440,191 @@
       true
     );
 
-    const testimonialsInitial = (data.testimonials || []).map(t => `${t.quote || ''} | ${t.author || ''}`).join('\n');
+    // Visual Latest Recognition editor (per-item rows + image upload)
+    const recTextEl = portfolioFormEl.querySelector('[data-key="recognitionText"]');
+    let recognitionItems = Array.isArray(data.recognition)
+      ? data.recognition.map(r => ({
+          icon: r.icon || '',
+          title: r.title || '',
+          event: r.event || '',
+          imageUrl: r.imageUrl || '',
+          link: r.link || ''
+        }))
+      : [];
+
+    // If no structured array but raw text exists, parse it once so editor has something to show
+    if (!recognitionItems.length && recTextEl && recTextEl.value && recTextEl.value.trim()) {
+      try {
+        const lines = recTextEl.value.split('\\n').map(s => s.trim()).filter(Boolean);
+        recognitionItems = lines.map(line => {
+          const parts = line.split('|').map(p => p.trim());
+          return {
+            icon: parts[0] || '',
+            title: parts[1] || '',
+            event: parts[2] || '',
+            imageUrl: parts[3] || '',
+            link: parts[4] || ''
+          };
+        });
+      } catch {
+        // ignore parse errors; stay on empty list
+      }
+    }
+
+    // Keep live portfolio in sync with the editor
+    if (!livePortfolio || typeof livePortfolio !== 'object') livePortfolio = {};
+    livePortfolio.recognition = recognitionItems.map(r => ({ ...r }));
+
+    const recognitionWrapper = document.createElement('div');
+    recognitionWrapper.className = 'field-group';
+    recognitionWrapper.innerHTML = `
+      <label>Latest Recognition (visual editor)</label>
+      <p style="font-size:0.8rem;color:#aaa;margin-bottom:0.5rem;">
+        Manage your awards as individual cards. Each row controls icon, title, event, optional image and link.
+        The underlying text field above is kept in sync automatically when you edit here.
+      </p>
+      <div id="recognition-editor-list" class="list" style="margin-top:0.5rem;"></div>
+      <button type="button" id="recognition-add-btn" class="btn-secondary-admin" style="margin-top:0.75rem;">+ Add recognition</button>
+    `;
+    portfolioFormEl.appendChild(recognitionWrapper);
+
+    const recognitionListEl = recognitionWrapper.querySelector('#recognition-editor-list');
+    const recognitionAddBtn = recognitionWrapper.querySelector('#recognition-add-btn');
+
+    function syncRecognitionTextFromEditor() {
+      if (!recTextEl) return;
+      const lines = recognitionItems.map(r => [
+        r.icon || '',
+        r.title || '',
+        r.event || '',
+        r.imageUrl || '',
+        r.link || ''
+      ].join(' | '));
+      recTextEl.value = lines.join('\\n');
+      // Also keep structured array up-to-date so previews and saves use the same data
+      livePortfolio.recognition = recognitionItems.map(r => ({ ...r }));
+      recTextEl.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function renderRecognitionList() {
+      if (!recognitionListEl) return;
+      recognitionListEl.innerHTML = '';
+
+      if (!recognitionItems.length) {
+        const empty = document.createElement('p');
+        empty.style.color = '#9ca3af';
+        empty.style.fontSize = '0.85rem';
+        empty.textContent = 'No recognition items yet. Click "+ Add recognition" to create your first award.';
+        recognitionListEl.appendChild(empty);
+        return;
+      }
+
+      recognitionItems.forEach((rec, index) => {
+        const row = document.createElement('div');
+        row.className = 'list-item';
+        row.setAttribute('data-recognition-index', String(index));
+
+        row.innerHTML = `
+          <div class="list-item-main">
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:flex-start;">
+              <input data-field="icon" placeholder="Icon (emoji)" value="${rec.icon || ''}"
+                     style="flex:0.4 1 70px;padding:0.4rem 0.6rem;border-radius:6px;border:1px solid #333;background:#000;color:#fff;font-size:0.85rem;" />
+              <input data-field="title" placeholder="Title" value="${rec.title || ''}"
+                     style="flex:1 1 160px;padding:0.4rem 0.6rem;border-radius:6px;border:1px solid #333;background:#000;color:#fff;font-size:0.85rem;" />
+              <input data-field="event" placeholder="Event / Year" value="${rec.event || ''}"
+                     style="flex:1 1 140px;padding:0.4rem 0.6rem;border-radius:6px;border:1px solid #333;background:#000;color:#fff;font-size:0.8rem;" />
+            </div>
+            <div style="margin-top:0.4rem;display:flex;flex-direction:column;gap:0.4rem;">
+              <input data-field="link" placeholder="External link (optional)" value="${rec.link || ''}"
+                     style="width:100%;padding:0.4rem 0.6rem;border-radius:6px;border:1px solid #333;background:#000;color:#fff;font-size:0.8rem;" />
+              <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                <input data-field="imageUrl" placeholder="Image URL (optional)" value="${rec.imageUrl || ''}"
+                       style="flex:1 1 160px;padding:0.4rem 0.6rem;border-radius:6px;border:1px solid #333;background:#000;color:#fff;font-size:0.8rem;" />
+                <button type="button" data-action="upload-image"
+                        style="padding:0.35rem 0.6rem;border-radius:6px;border:none;background:#3b82f6;color:#fff;font-size:0.75rem;cursor:pointer;">Upload image</button>
+                <input type="file" data-upload="image" accept="image/*" style="display:none" />
+                <img data-preview="image" src="${rec.imageUrl || ''}"
+                     style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #333;${rec.imageUrl ? '' : 'display:none;'}" />
+              </div>
+            </div>
+          </div>
+          <div class="list-item-actions">
+            <button type="button" data-action="remove-recognition"
+                    style="padding:0.3rem 0.6rem;border-radius:6px;border:none;background:#ef4444;color:#fff;font-size:0.75rem;cursor:pointer;">Delete</button>
+          </div>
+        `;
+
+        // Text fields
+        row.querySelectorAll('[data-field]').forEach(input => {
+          const field = input.getAttribute('data-field');
+          const handler = () => {
+            const target = recognitionItems[index] || (recognitionItems[index] = {});
+            target[field] = input.value;
+            syncRecognitionTextFromEditor();
+          };
+          input.addEventListener('input', handler);
+        });
+
+        // Image upload
+        const uploadBtn = row.querySelector('[data-action="upload-image"]');
+        const fileInput = row.querySelector('[data-upload="image"]');
+        const previewImg = row.querySelector('[data-preview="image"]');
+        const imageField = row.querySelector('[data-field="imageUrl"]');
+
+        if (uploadBtn && fileInput && imageField) {
+          uploadBtn.addEventListener('click', () => fileInput.click());
+          fileInput.addEventListener('change', () => {
+            const file = fileInput.files && fileInput.files[0];
+            if (!file) return;
+            uploadBtn.disabled = true;
+            uploadFileToServer(file, 'images')
+              .then(info => {
+                const url = (info && (info.url || info.fileName)) || '';
+                if (!url) return;
+                imageField.value = url;
+                if (previewImg) {
+                  previewImg.src = url;
+                  previewImg.style.display = 'block';
+                }
+                const target = recognitionItems[index] || (recognitionItems[index] = {});
+                target.imageUrl = url;
+                syncRecognitionTextFromEditor();
+              })
+              .catch(() => {
+                alert('Failed to upload recognition image.');
+              })
+              .finally(() => {
+                uploadBtn.disabled = false;
+                fileInput.value = '';
+              });
+          });
+        }
+
+        const removeBtn = row.querySelector('[data-action="remove-recognition"]');
+        if (removeBtn) {
+          removeBtn.addEventListener('click', () => {
+            recognitionItems.splice(index, 1);
+            renderRecognitionList();
+            syncRecognitionTextFromEditor();
+          });
+        }
+
+        recognitionListEl.appendChild(row);
+      });
+    }
+
+    if (recognitionAddBtn && !recognitionAddBtn.__bound) {
+      recognitionAddBtn.__bound = true;
+      recognitionAddBtn.addEventListener('click', () => {
+        recognitionItems.push({ icon: '🏆', title: '', event: '', imageUrl: '', link: '' });
+        renderRecognitionList();
+        syncRecognitionTextFromEditor();
+      });
+    }
+
+    renderRecognitionList();
+
+    const testimonialsInitial = (data.testimonials || []).map(t => `${t.quote || ''} | ${t.author || ''}`).join('\\n');
     fieldRow('testimonialsText', 'Testimonials (quote | author per line)',
       testimonialsInitial.replace(/\\n/g, '\n'),
       true

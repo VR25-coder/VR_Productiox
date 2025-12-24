@@ -14,11 +14,12 @@ logs/
 *.log
 
 # runtime data
-uploads/
+# uploads/  # uncomment this line if you want uploads to be ignored again
 
 # data: keep portfolio content but ignore messages/invoices (contain personal data)
 data/*.json
 data/*.bak
+data/*.db
 !data/portfolio_data.json
 
 # OS / editor
