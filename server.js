@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const jwt = require('jsonwebtoken');
-const https = require('https');
+
 const { z } = require('zod');
 const { createClient } = require('@supabase/supabase-js');
 const db = require('./db_supabase');
