@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
+const https = require('https');
 const { z } = require('zod');
 const { createClient } = require('@supabase/supabase-js');
 const db = require('./db_supabase');
@@ -61,32 +61,69 @@ if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
   console.warn('[storage] SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set; using local uploads/ folder');
 }
 
-// Optional SMTP configuration for contact-form email notifications
-const SMTP_HOST = process.env.SMTP_HOST || '';
-const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
-const SMTP_USER = process.env.SMTP_USER || '';
-const SMTP_PASS = process.env.SMTP_PASS || '';
+// Brevo Email via HTTP API (contact-form email notifications)
 const MAIL_FROM = process.env.MAIL_FROM || '';
 const MAIL_TO = process.env.MAIL_TO || '';
+const BREVO_API_KEY = process.env.BREVO_API_KEY || '';
 
-let mailTransporter = null;
-if (SMTP_HOST && SMTP_USER && SMTP_PASS) {
-  try {
-    mailTransporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      secure: SMTP_PORT === 465,
-      auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS
-      }
-    });
-  } catch (e) {
-    console.error('[mail] Failed to initialise SMTP transporter:', e);
-    mailTransporter = null;
-  }
+if (BREVO_API_KEY) {
+  console.log('[mail] Brevo API key detected; emails will be sent via HTTP API');
 } else {
-  console.warn('[mail] SMTP settings not fully configured; contact-form emails will be skipped');
+  console.warn('[mail] BREVO_API_KEY not set; contact-form emails will be skipped');
+}
+
+// Helper for sending emails via Brevo HTTP API
+function sendBrevoEmail({ toEmail, subject, text, html }) {
+  if (!BREVO_API_KEY || !MAIL_FROM) {
+    return Promise.reject(new Error('BREVO_API_KEY or MAIL_FROM missing'));
+  }
+
+  const payload = JSON.stringify({
+    sender: { name: process.env.MAIL_FROM_NAME || 'VR_Productiox', email: MAIL_FROM },
+    replyTo: { email: MAIL_FROM },
+    to: [{ email: toEmail }],
+    subject,
+    textContent: text,
+    htmlContent: html
+  });
+
+  const options = {
+    hostname: 'api.brevo.com',
+    path: '/v3/smtp/email',
+    method: 'POST',
+    headers: {
+      'api-key': BREVO_API_KEY,
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(payload)
+    }
+  };
+
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, (res) => {
+      let body = '';
+      res.on('data', (chunk) => (body += chunk));
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          try {
+            resolve(body ? JSON.parse(body) : {});
+          } catch {
+            resolve({});
+          }
+        } else {
+          console.error('[mail] Brevo send failed', res.statusCode, body);
+          reject(new Error(`Brevo send failed: ${res.statusCode}`));
+        }
+      });
+    });
+
+    req.on('error', (err) => {
+      console.error('[mail] Brevo send error', err);
+      reject(err);
+    });
+
+    req.write(payload);
+    req.end();
+  });
 }
 
 // Admin password storage: bcrypt hash persisted to data/admin_auth.json
@@ -542,9 +579,9 @@ app.post('/api/upload', requireAdmin, uploadLimiter, async (req, res) => {
   }
 });
 
-// Helper: send email notifications for contact messages (best-effort, non-blocking)
+// Helper: send email notifications for contact messages (Brevo API only)
 async function sendContactEmails(message) {
-  if (!mailTransporter || !MAIL_FROM) return;
+  if (!BREVO_API_KEY || !MAIL_FROM) return;
 
   const adminRecipient = MAIL_TO || MAIL_FROM;
   const fullName = `${message.first_name || ''} ${message.last_name || ''}`.trim() || 'Portfolio visitor';
@@ -578,32 +615,32 @@ Video Editor & Cinematographer
 VR_Productiox`;
 
   const tasks = [];
-  tasks.push(
-    mailTransporter
-      .sendMail({
-        from: MAIL_FROM,
-        to: adminRecipient,
-        subject: `New portfolio enquiry: ${safeSubject}`,
-        text: adminText
-      })
-      .catch((e) => {
-        console.error('[mail] Failed to send admin contact email', e);
-      })
-  );
 
+  // Send admin notification
+  if (adminRecipient) {
+    tasks.push(
+      sendBrevoEmail({
+        toEmail: adminRecipient,
+        subject: `New portfolio enquiry: ${safeSubject}`,
+        text: adminText,
+        html: adminText.replace(/\n/g, '<br>')
+      }).catch((e) => {
+        console.error('[mail] Failed to send admin contact email via Brevo API', e);
+      })
+    );
+  }
+
+  // Send visitor confirmation
   if (message.email) {
     tasks.push(
-      mailTransporter
-        .sendMail({
-          from: MAIL_FROM,
-          to: message.email,
-          subject: 'Thank you for contacting VR_Productiox',
-          text: userBody,
-          html: userBody.replace(/\n/g, '<br>')
-        })
-        .catch((e) => {
-          console.error('[mail] Failed to send confirmation email to visitor', e);
-        })
+      sendBrevoEmail({
+        toEmail: message.email,
+        subject: 'Thank you for contacting VR_Productiox',
+        text: userBody,
+        html: userBody.replace(/\n/g, '<br>')
+      }).catch((e) => {
+        console.error('[mail] Failed to send confirmation email to visitor via Brevo API', e);
+      })
     );
   }
 
