@@ -79,52 +79,69 @@ function sendBrevoEmail({ toEmail, subject, text, html }) {
     return Promise.reject(new Error('BREVO_API_KEY or MAIL_FROM missing'));
   }
 
-  const payload = JSON.stringify({
+  const payload = {
     sender: { name: MAIL_FROM_NAME || 'VR Productiox', email: MAIL_FROM },
     replyTo: { email: MAIL_FROM },
     to: [{ email: toEmail }],
     subject,
     textContent: text,
     htmlContent: html
-  });
-
-  const options = {
-    hostname: 'api.brevo.com',
-    path: '/v3/smtp/email',
-    method: 'POST',
-    headers: {
-      'api-key': BREVO_API_KEY,
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(payload)
-    }
   };
 
-  return new Promise((resolve, reject) => {
-    const req = https.request(options, (res) => {
-      let body = '';
-      res.on('data', (chunk) => (body += chunk));
-      res.on('end', () => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
+  const url = 'https://api.brevo.com/v3/smtp/email';
+  const headers = {
+    'api-key': BREVO_API_KEY,
+    'Content-Type': 'application/json'
+  };
+
+  const maxAttempts = 3;
+
+  async function attemptSend() {
+    let lastErr;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+
+        const res = await fetch(url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeout);
+
+        const bodyText = await res.text();
+        if (res.ok) {
           try {
-            resolve(body ? JSON.parse(body) : {});
+            return bodyText ? JSON.parse(bodyText) : {};
           } catch {
-            resolve({});
+            return {};
           }
         } else {
-          console.error('[mail] Brevo send failed', res.statusCode, body);
-          reject(new Error(`Brevo send failed: ${res.statusCode}`));
+          console.error('[mail] Brevo send failed', res.status, bodyText);
+          throw new Error(`Brevo send failed: ${res.status}`);
         }
-      });
-    });
+      } catch (err) {
+        lastErr = err;
+        const transient =
+          err && (err.name === 'AbortError' || err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT');
 
-    req.on('error', (err) => {
-      console.error('[mail] Brevo send error', err);
-      reject(err);
-    });
+        if (attempt < maxAttempts && transient) {
+          const backoffMs = 500 * attempt;
+          await new Promise((r) => setTimeout(r, backoffMs));
+          continue;
+        }
 
-    req.write(payload);
-    req.end();
-  });
+        console.error('[mail] Brevo send error', err);
+        throw err;
+      }
+    }
+    throw lastErr || new Error('Unknown Brevo send error');
+  }
+
+  return attemptSend();
 }
 
 // Admin password storage: bcrypt hash persisted to data/admin_auth.json
