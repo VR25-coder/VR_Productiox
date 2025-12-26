@@ -62,7 +62,8 @@ if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 // Brevo Email via HTTP API (contact-form email notifications)
-const MAIL_FROM = process.env.MAIL_FROM || '';
+const MAIL_FROM = String(process.env.MAIL_FROM || '').trim().replace(/^["']|["']$/g, '');
+const MAIL_FROM_NAME = String(process.env.MAIL_FROM_NAME || '').trim();
 const MAIL_TO = process.env.MAIL_TO || '';
 const BREVO_API_KEY = process.env.BREVO_API_KEY || '';
 
@@ -79,7 +80,7 @@ function sendBrevoEmail({ toEmail, subject, text, html }) {
   }
 
   const payload = JSON.stringify({
-    sender: { name: process.env.MAIL_FROM_NAME || 'VR_Productiox', email: MAIL_FROM },
+    sender: { name: MAIL_FROM_NAME || 'VR Productiox', email: MAIL_FROM },
     replyTo: { email: MAIL_FROM },
     to: [{ email: toEmail }],
     subject,
