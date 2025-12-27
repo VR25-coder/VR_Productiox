@@ -455,12 +455,12 @@ body::after {
 }
 
  .hero-video-placeholder {
-    width: min(560px, 92vw);
-    aspect-ratio: 16 / 9;
-    height: auto;
+    /* make the hero image card taller and clear */
+    width: min(640px, 92vw);
+    height: clamp(360px, 52vw, 720px);
     /* Updated hero image */
     background: #050505 url('Instagram post - 21.jpg.png') center/cover no-repeat;
-    border-radius: 22px;
+    border-radius: 18px;
     position: relative;
     overflow: hidden;
     box-shadow:
@@ -1175,7 +1175,8 @@ body::after {
         line-height: 1.15;
     }
     .hero-video-placeholder {
-        width: min(420px, 94vw);
+        width: min(460px, 94vw);
+        height: clamp(340px, 64vw, 620px);
     }
 }
 
