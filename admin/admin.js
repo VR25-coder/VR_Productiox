@@ -1745,44 +1745,92 @@ function initReviewsTab() {
   function renderList() {
     if (!listEl) return;
     listEl.innerHTML = '';
+
     livePortfolio.clientHighlights.forEach((item, idx) => {
       const card = document.createElement('div');
       card.style = 'border:1px solid #333;padding:12px;border-radius:8px;background:#111;margin-bottom:10px;';
 
       const title = document.createElement('input');
-      title.type = 'text'; title.placeholder = 'Clients Success Highlight'; title.value = item.title || '';
+      title.type = 'text';
+      title.placeholder = 'Clients Success Highlight';
+      title.value = item.title || '';
       title.style = 'width:100%; margin-bottom:8px;';
-      title.addEventListener('input', () => { livePortfolio.clientHighlights[idx].title = title.value.trim(); renderPreview(); });
+      title.addEventListener('input', () => {
+        livePortfolio.clientHighlights[idx].title = title.value.trim();
+        renderPreview();
+      });
 
       const platform = document.createElement('input');
-      platform.type = 'text'; platform.placeholder = 'Platform (Instagram, YouTube, etc.)'; platform.value = item.platform || '';
+      platform.type = 'text';
+      platform.placeholder = 'Platform (Instagram, YouTube, etc.)';
+      platform.value = item.platform || '';
       platform.style = 'width:100%; margin-bottom:8px;';
-      platform.addEventListener('input', () => { livePortfolio.clientHighlights[idx].platform = platform.value.trim(); renderPreview(); });
+      platform.addEventListener('input', () => {
+        livePortfolio.clientHighlights[idx].platform = platform.value.trim();
+        renderPreview();
+      });
 
       const link = document.createElement('input');
-      link.type = 'text'; link.placeholder = 'Post / reel / video URL'; link.value = item.link || '';
+      link.type = 'text';
+      link.placeholder = 'Post / reel / video URL';
+      link.value = item.postUrl || item.link || '';
       link.style = 'width:100%; margin-bottom:8px;';
-      link.addEventListener('input', () => { livePortfolio.clientHighlights[idx].link = link.value.trim(); renderPreview(); });
+      link.addEventListener('input', () => {
+        const value = link.value.trim();
+        const target = livePortfolio.clientHighlights[idx];
+        target.postUrl = value;              // used by public site + Supabase sync
+        target.link = value;                 // backward compatibility with old data
+        renderPreview();
+      });
 
       const reviewText = document.createElement('textarea');
-      reviewText.rows = 3; reviewText.placeholder = 'Best comment or review text'; reviewText.value = item.reviewText || item.description || '';
+      reviewText.rows = 3;
+      reviewText.placeholder = 'Best comment or review text';
+      reviewText.value = item.commentText || item.reviewText || item.description || '';
       reviewText.style = 'width:100%; margin-bottom:8px;';
       reviewText.addEventListener('input', () => {
-        livePortfolio.clientHighlights[idx].reviewText = reviewText.value.trim();
-        livePortfolio.clientHighlights[idx].description = reviewText.value.trim(); // keep existing field for public site
+        const value = reviewText.value.trim();
+        const target = livePortfolio.clientHighlights[idx];
+        target.commentText = value;          // main field used on public site + Supabase sync
+        target.reviewText = value;           // keep older field names populated
+        target.description = value;          // compatibility with any legacy templates
         renderPreview();
       });
 
       const clientName = document.createElement('input');
-      clientName.type = 'text'; clientName.placeholder = 'Comment / client name'; clientName.value = item.clientName || '';
+      clientName.type = 'text';
+      clientName.placeholder = 'Comment / client name';
+      clientName.value = item.commentAuthor || item.clientName || '';
       clientName.style = 'width:100%; margin-bottom:8px;';
-      clientName.addEventListener('input', () => { livePortfolio.clientHighlights[idx].clientName = clientName.value.trim(); renderPreview(); });
+      clientName.addEventListener('input', () => {
+        const value = clientName.value.trim();
+        const target = livePortfolio.clientHighlights[idx];
+        target.commentAuthor = value;        // used by public site + Supabase sync
+        target.clientName = value;           // backward compatibility
+        renderPreview();
+      });
+
+      const thumb = document.createElement('input');
+      thumb.type = 'text';
+      thumb.placeholder = 'Optional thumbnail image URL (avatar / screenshot)';
+      thumb.value = item.thumbnail || '';
+      thumb.style = 'width:100%; margin-bottom:8px;';
+      thumb.addEventListener('input', () => {
+        livePortfolio.clientHighlights[idx].thumbnail = thumb.value.trim();
+        renderPreview();
+      });
 
       const actions = document.createElement('div');
       actions.style = 'display:flex;gap:8px;justify-content:flex-end;';
       const del = document.createElement('button');
-      del.type = 'button'; del.className = 'btn-secondary-admin'; del.textContent = 'Delete';
-      del.addEventListener('click', () => { livePortfolio.clientHighlights.splice(idx, 1); renderList(); renderPreview(); });
+      del.type = 'button';
+      del.className = 'btn-secondary-admin';
+      del.textContent = 'Delete';
+      del.addEventListener('click', () => {
+        livePortfolio.clientHighlights.splice(idx, 1);
+        renderList();
+        renderPreview();
+      });
       actions.appendChild(del);
 
       card.appendChild(title);
@@ -1790,6 +1838,7 @@ function initReviewsTab() {
       card.appendChild(link);
       card.appendChild(reviewText);
       card.appendChild(clientName);
+      card.appendChild(thumb);
       card.appendChild(actions);
 
       listEl.appendChild(card);
@@ -1802,8 +1851,8 @@ function initReviewsTab() {
     livePortfolio.clientHighlights.forEach(h => {
       const row = document.createElement('div');
       row.style = 'padding:6px 8px;border-bottom:1px solid #222;';
-      const quote = h.reviewText || h.description || '';
-      const by = h.clientName ? ` — ${h.clientName}` : '';
+      const quote = h.commentText || h.reviewText || h.description || '';
+      const by = (h.commentAuthor || h.clientName) ? `  ${h.commentAuthor || h.clientName}` : '';
       row.textContent = `${quote}${by}`;
       previewEl.appendChild(row);
     });
@@ -1815,8 +1864,16 @@ function initReviewsTab() {
   if (addBtn && !addBtn._bound) {
     addBtn._bound = true;
     addBtn.addEventListener('click', () => {
-      livePortfolio.clientHighlights.push({ title: '', platform: '', link: '', reviewText: '', clientName: '' });
-      renderList(); renderPreview();
+      livePortfolio.clientHighlights.push({
+        title: '',
+        platform: '',
+        postUrl: '',
+        commentText: '',
+        commentAuthor: '',
+        thumbnail: ''
+      });
+      renderList();
+      renderPreview();
     });
   }
 

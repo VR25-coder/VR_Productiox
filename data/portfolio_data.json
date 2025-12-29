@@ -141,29 +141,43 @@
   ],
   "testimonials": [
     {
-      "quote": "Vrutant transformed our vision into reality with exceptional and technical expertise. The commercial campaign exceeded our expectations and drove a 40% increase in engagement.",
+      "quote": "Vrutant transformed our vision into reality with exceptional technical expertise. The commercial campaign exceeded our expectations and drove a 40% increase in engagement.",
       "author": "Edit Client 01"
     },
     {
       "quote": "Working with Vrutant was smooth and professional from start to finish. The final video quality was outstanding.",
       "author": "Edit Client 02"
+    },
+    {
+      "quote": "Vrutant delivered an incredible promotional video that boosted our leads by 30%.",
+      "author": "Dr. A.B. Hospital",
+      "platform": "Google Review",
+      "link": "https://example.com/dr-ab-hospital-review"
     }
   ],
   "clientHighlights": [
     {
-      "title": "Clients Success Highlight",
-      "commentText": "Vrutant transformed our vision into reality with exceptional and technical expertise. The commercial campaign exceeded our expectations and drove a 40% increase in engagement.",
+      "title": "Client Success Highlight",
+      "commentText": "Vrutant transformed our vision into reality with exceptional technical expertise. The commercial campaign exceeded our expectations and drove a 40% increase in engagement.",
       "commentAuthor": "Edit Client 01",
       "platform": "Client",
       "postUrl": "",
       "thumbnail": ""
     },
     {
-      "title": "Clients Success Highlight",
+      "title": "Client Success Highlight",
       "commentText": "Working with Vrutant was smooth and professional from start to finish. The final video quality was outstanding.",
       "commentAuthor": "Edit Client 02",
       "platform": "Client",
       "postUrl": "",
+      "thumbnail": ""
+    },
+    {
+      "title": "Client Success Highlight",
+      "commentText": "Vrutant delivered an incredible promotional video that boosted our leads by 30%.",
+      "commentAuthor": "Dr. A.B. Hospital",
+      "platform": "Google Review",
+      "postUrl": "https://example.com/dr-ab-hospital-review",
       "thumbnail": ""
     }
   ],
